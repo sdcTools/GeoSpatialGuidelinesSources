@@ -1,0 +1,35 @@
+\section{Auxiliary Methods} \label{sec:aux}
+
+\subsection{Binning values} \label{sec:aux_bin}
+
+It can be helpful for protection to sort counts or continuous values into \emph{discrete class bins}. For example, in a map that shows local unemployment rate at the grid cell level, one may show for a cell not the value 12.5\%, but instead the class label `10-15\%'. The effect is similar to rounding, in that the user can only infer an interval for the true value; see \citet[5.5]{HundepoolEtAl2024}. Secondary disclosure risks are thereby also similar to deterministic rounding. 
+
+\begin{tcolorbox}[breakable]
+\emph{Example}:
+Suppose we know from another map that the grid cell with class label `10-15\% unemployed' has a total of 8 persons in it. This reveals that 1 person is unemployed, since 1 in 8 is the only count that leads to a fraction between 10-15\%.
+\end{tcolorbox}
+
+For such reasons binning alone will often not suffice to create a safe geo-referenced data product. Instead, it is often advisable to use binning as an auxiliary method for post-processing the output from another SDC method. For example, \citet{JongeWolf2016} suggest discretising the density map from spatial smoothing (see section \ref{sec:methods_smooth}). Some general recommendations to increase the protection from binning are:
+\begin{itemize}
+    \item Choosing large enough uncertainty intervals.
+    \item Curating the release program. For instance, the disclosure from unemployment rates in the example above relied on an additional release of true counts for the same grid.
+    \item Avoiding intersecting or custom bins. For instance, releasing the same grid cell in two maps, where it is labeled in one `10-15\% unemployed' and `12\% or more unemployed' in the other, allows inferring that the true value must be in the interval 12-15\%, which is sharper than any of the two.
+\end{itemize}
+
+\subsection{Suppressing cell values} \label{sec:aux_suppr}
+
+When aggregates for small geographical regions, such as grid cells, are considered unsafe for publication, the corresponding value may be suppressed -- meaning the value is kept from the publication and replaced by a suppression symbol, like a dot or `$\times$'. Thus replacing unsafe values is called \emph{primary suppression}. 
+%Suppressed values are typically marked with a specific symbol in tabular representation, and with a specific color in choropleth maps to distinguish them from empty cells.
+
+If aggregates are published in nested area systems (for instance 100m $\times$ 100m grid cells and 200m $\times$ 200m grid cells), then the suppressed value may still be disclosed by subtraction. For instance, if from the four nested cells that make up a large cell, a single one is suppressed, one would only need to subtract the value of the other three from the value of the large cell. To prevent this, at least \emph{two} suppressed cells are required within the larger cell. The value of the large cell is equivalent to a `column total' (or sub total) in a table. At the same time there may be a `row total' along the subject domain: We may publish, for instance, counts of total population, native population and non-native population per grid cell. If we suppress the value of `non-native' for an area, we must suppress that of `native' as well in order to prevent disclosure by subtraction. The problem of \emph{secondary suppression} from statistical disclosure control for tables therefore applies. The reader is referred to \citet[ch. 4]{HundepoolEtAl2024} for details.
+
+Some further remarks on cell suppression in the geographic context:
+\begin{itemize}
+    \item Grid products for whole countries or similarly detailed geographic breakdowns may require a large number of cells to be suppressed. 
+    \item The information lost is likely to be concentrated in low-density regions and at the edges of clusters (see section \ref{sec:ident_geochar}).
+    \item By choosing a larger grid size, one will typically have to suppress fewer cells, but the information lost per suppression will be higher.
+    \item One can also use cell suppression on top of another disclosure control method to improve safety. Then the suppression can often be relaxed somewhat (for instance no secondary suppression).
+    \item Suppression may be used to resolve geographical differencing issues, as described in \ref{sec:risk_diff}, though finding the right suppression pattern for that purpose can prove challenging.
+\end{itemize}
+
+\newpage

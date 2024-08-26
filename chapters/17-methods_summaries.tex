@@ -1,0 +1,68 @@
+\section{Methods Overview} \label{sec:strengthweak}
+
+In this section we summarise some advantages and disadvantages of the disclosure control methods introduced in sections \ref{sec:quadtree} to \ref{sec:trs}. Readers may use these as general guidance on which method best fits their own use cases.
+
+\subsubsection{Quadtree-based methods (section \ref{sec:quadtree})}
+
+ \noindent\emph{Advantages:}
+\begin{itemize}
+    \item Effective protection against reidentification risk of disclosure.
+    \item Very good utility in most cases.
+\end{itemize}
+
+\noindent\emph{Disadvantages:}
+\begin{itemize}
+    \item Not an effective protection against geographic differencing.
+    \item In some case, the information loss can be very large.
+\end{itemize}
+
+
+ \subsubsection{Spatial Smoothing Method (section \ref{sec:methods_smooth})}
+ 
+ \noindent\emph{Advantages:}
+\begin{itemize}
+    \item Uses high-density areas to protect nearby low-density areas.
+    \item Results in a smooth spatial density, which often aligns with publishing the data as a density map.
+\end{itemize}
+
+\noindent\emph{Disadvantages:}
+\begin{itemize}
+    \item Scores lower on utility measures compared to other methods.
+\end{itemize}
+
+\subsubsection{Cell Key Method (section \ref{sec:ckm})}
+
+\noindent\emph{Advantages:}
+\begin{itemize}
+    \item Effective protection against differencing, including geographic differencing.
+    \item Published totals and subtotals have the same accuracy as inner values. Since they are perturbed independently, errors do not build up.
+    \item Allows for comparatively flexible tabulation / mapping of spatial data. Change of Support problems are avoided.
+    \item If the perturbation table is set up such that counts of zero are not perturbed, there will be no artificially inhabited cells. Avoids implausible locations, since values are not moved in space, just increased or decreased. Works for isolated areas (does not need populated neighbourhood).
+    \item Coherent across multiple data products / publications (same units, same noise).
+\end{itemize}
+
+\noindent\emph{Disadvantages:}
+\begin{itemize}
+    \item Not additive. Inner cells can (by chance) become larger than marginals.
+    \item Manually calculated aggregates over several perturbed areas (e.g. sums of perturbed grid cells) can come with large errors. Same holds for derived statistics of two or more independently perturbed values for the same area (like ratios).
+    \item Might create artificially uninhabited cells.
+    \item Changes also values of cells that are not at risk.
+    \item Risks of successful averaging attacks \citep{AsgharKaafar2020} should be controlled. This is done by considering the complexity and flexibility of the planned outputs when choosing method parameters \citep{Bach2022}.
+\end{itemize}
+
+
+\subsubsection{Targeted Record Swapping (section \ref{sec:trs})}
+
+\noindent\emph{Advantages:}
+\begin{itemize}
+    \item Method is simple to communicate.
+    \item Consistency between maps built from the same micro data set.
+\end{itemize}
+
+\noindent\emph{Disadvantages:}
+\begin{itemize}
+    \item Fine-tuning TRS to protect multiple maps built from the same micro data set can be challenging.
+    \item Final maps might need an additional protection method.
+\end{itemize}
+
+\newpage

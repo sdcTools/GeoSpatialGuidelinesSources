@@ -1,0 +1,161 @@
+\section{Sensitivity measures for aggregates} \label{sec:risk_aggr}
+
+\subsection{Risk measure and geospatial data} \label{sec:risk_aggr_geosp}
+
+Statistical disclosure control is concerned with mitigating the risk of disclosure
+of individual observations while producing and publishing statistics.
+
+Often statistics are produced on regions such as administrative areas. If this is 
+the case, one could decide to see the administrative area as a categorical variable 
+and turn to a standard statistical disclosure procedure, such as is described in handbooks like \citet{HundepoolEtAl2024}. For many cases this is a sensible and valid approach. The most straightforward adaptation along this line is using a minimum frequency rule.\\
+
+\textit{Minimum frequency rule for area aggregates}: An aggregate of statistical units by geo-reference and (optionally) one or more non-geographic variables is vulnerable, if it corresponds to fewer than $n$ units. See \citet[4.2.1]{HundepoolEtAl2024}. A very common threshold is $n = 3$.\\
+
+However, the standard procedure neglects location information, so it can not use the fact that two regions are neighbours, and in a more general case, when the individual observations have
+detailed locations, e.g. $x$ and $y$ coordinates, it cannot create safe aggregated 
+regions that are based on the locations of the data, since it neglects the spatial 
+dimension. 
+
+In order to derive safe spatial aggregations it is useful to define a risk measure for 
+spatial data. We will restrict ourselves to spatial distributions defined on $\mathbb{R}^2$, i.e. in the plane. It 
+is convenient
+to write the (target) population as 
+
+$$\mathcal{U} = {\mathbf{r}_1, \ldots, \mathbf{r}_N }$$
+
+with $\mathbf{r}_i = (x_i, y_i)$ the representation of element $i$ of the population by its 
+coordinates $(x_i, y_i)$. I.e., $\mathcal{U}$ is a
+set of points in $\mathbb{R}^2$. 
+This reflects the notion that location is an identifying
+variable. In official statistics, the $\mathbf{r}_i$ often coincides with the locations of the
+target population of houses or of enterprises. Assume furthermore that we have
+measurements on each location $\mathbf{r}_i$ of phenomenon $g$, e.g. production or 
+unemployment, and denote these measurements by $g_1,\ldots,g_N$.
+We construct a 
+continuous function $g(\mathbf{r}) : \mathbb{R}^2 \xrightarrow{} \mathbb{R}$, which is a spatial 
+distribution representing the value of $g$ at any location $\mathbf{r}$. Defining it for any location and choosing it to be continuous makes $g$ a geospatial
+phenomenon and a useful practical choice.
+It is a continuous approximation of the discrete spatial distribution
+of the underlying finite population.
+Let $\mathcal{A}$ denote an area, defined to be a subset of $\mathbb{R}^2$. $\mathcal{A}$ can be anything
+from administrative regions to a set of points; it can be a building, a street, a
+municipality, a grid square, a county, a general polygon or a collection thereof.
+For an area $\mathcal{A}$ we define the total amount of $g$ (e.g. energy consumption) as
+
+\begin{equation*}
+G(\mathcal{A}) = \int_{\mathcal{A}} g(\textbf{r}) \; d\textbf{r}.
+\end{equation*}
+
+From this we can derive the mean $g$ per area $\mathcal{A}$
+\begin{equation}
+    \label{eq:g_area}
+    \Bar{G}_a(\mathcal{A}) = \frac{G(\mathcal{A})}{\parallel \mathcal{A} \parallel}
+\end{equation}
+
+where $\parallel \mathcal{A} \parallel$ denotes the size of area $\mathcal{A}$. Alternatively we can derive the mean $g$ per unit in area $\mathcal{A}$ as
+
+\begin{equation}
+    \label{eq:g_unitarea}
+    \Bar{G}_u(\mathcal{A}) = 
+       \frac{G(\mathcal{A})}{\sum_{i=1}^{N} \mathbbm{1}(\mathbf{r}_i \in \mathcal{A})}
+\end{equation}
+where $\mathbbm{1}(B)$ equals 1 if $B$ is \texttt{true} and $0$ if B is \texttt{false}. Note that in these definitions
+we tacitly assume that the denominators in (\ref{eq:g_area}) and (\ref{eq:g_unitarea}) are positive. In case a
+denominator is zero, the mean would be ‘undefined’.
+Using administrative areas in Eq. (\ref{eq:g_unitarea}) would coincide with the ideas behind
+the more traditional way of plotting distributions as described in the beginning
+of this section. However, we now can more generally derive the mean $g$ for any
+region on a map.
+
+\subsection{Disclosure Risk}
+
+In 2017 researchers revealed that the internet service Strava shared secret Army base locations when 
+personnel on active duty shared their fitness activity to the Strava app, potentially 
+exposing them and their military activity to enemies and putting them at physical 
+risk. 
+This finding shows that the location of
+a population unit may sometimes be considered sensitive information: plotting
+the spatial distribution of ‘running’ people revealed the ‘secret’ location or shape
+of military compounds. We will restrict ourselves to the situation where location is 
+‘only’ an identifying variable.
+Disclosure risk is related to individual units, whereas a spatial distribution
+is a function of location. This means we have to make a link between the spatial
+distribution and the risk measure. To simplify the discussion, we assume that
+the full population is observed.\bigskip
+
+\textbf{Disclosure Scenario.} If we want to assess disclosure risk, we first need to
+specify possible disclosure risk scenarios. In case we plot a distribution of a
+variable on a map, several aspects play a role (see also chapter \ref{sec:ident}):
+
+\begin{itemize}
+\item The location of a population unit is very identifying.
+\item The possibility to zoom in on a map makes it easy to pinpoint the exact
+location of a population unit.
+\item The value of the variable at a certain location may be sensitive information.
+\item The spatial characteristics of the target population (e.g., where to find densely
+or sparsely populated regions) implies how identifiable a population unit is.
+\end{itemize}
+
+Based on those aspects, we have the following disclosure scenario in mind:\bigskip
+
+\textbf{Definition 1.} \textit{Basic disclosure scenario for plots of spatial distributions}
+
+An attacker first locates ‘hot-spots’: regions of high value of the spatial distribution. He then zooms in at that region until he can recognize/locate individual
+units from the population. Finally, he links the value of the spatial distribution
+to those individual units.
+Two sub-scenarios can be distinguished: in case the attacker is not a population unit with a location in the hot-spot of interest, he is called an \emph{external
+attacker}. In case the attacker is itself a population unit inside the hot-spot of interest,
+he is called an \emph{internal attacker}. In the latter case the internal attacker can
+use information on his own contribution to derive more accurate information on
+another unit in the hot-spot compared to an external attacker.\bigskip
+
+\textbf{Risk Measure}. In the traditional approach, each administrative region is
+regarded as a table cell and thus a p\%-rule can be applied to each administrative region. In case of a continuous spatial distribution, it makes no sense to
+consider each individual location as a table cell. By representing the units in the
+population by their locations $\mathbf{r}_i$, we have no area related to each individual unit.
+Indeed, there appear to be no ‘natural’ areas to be checked for a concentration
+rule like the p\%-rule. Note that ‘natural’ areas of two distinct units could be
+overlapping or actually coincide. In practice, the ‘natural’ region could be taken
+within a predefined set of regions or within unions of smallest allowable grid
+cells.
+
+For a region $\mathcal{A}$ we calculate the total value $G(\mathcal{A})$ of variable $g$. As concentration rule for that area, we check for each unit in area $\mathcal{A}$ whether its value can be
+estimated within p\% of its true value using $G(\mathcal{A})$, either by another unit in $\mathcal{A}$ (an internal attacker) or by a unit not in $\mathcal{A}$ (an external attacker). In case
+$\mathcal{A}$ contains only a single unit, this leads to the requirement that the integrated
+distribution over $\mathcal{A}$ should be more than p\% away from the true value of that
+single contribution. In case there are two or more observation in area $\mathcal{A}$, we treat
+$\mathcal{A}$ like a table cell and apply the p\%-rule. 
+In summary, we define
+the following concentration-based risk measure:
+
+\begin{equation}
+\label{eq:risk_measure}
+\mathsf{R_C}(\mathcal{A}, p) = 
+   \left\{
+   \begin{array}{rl}
+   0 & \text{if } \mathcal{A} \cap \mathcal{U} = \emptyset \\
+   (1 + p/100)g_{i_1} - G(\mathcal{A}) & \text{if } \mathcal{A} \cap \mathcal{U} = \{ \mathbf{r}_{i_1} \} \\
+   (1 + p/100)g_{i_1} + g_{i_2} - G(\mathcal{A}) & \text{otherwise }
+   \end{array}
+   \right.
+\end{equation}
+
+with $g_{i_1} = \textsf{max}(g_i : \mathbf{r}_i \in \mathcal{A})$ 
+(i.e., the largest value in area $\mathcal{A}$) and 
+$g_{i_2} = \textsf{max}(g_i :\mathbf{r}_i \in \mathcal{A}, \mathbf{r}_i \neq \mathbf{r}_{i_1})$ (i.e., the second largest value in area $\mathcal{A}$) and say that an
+area is not safe to be published if $\mathsf{R_C}(\mathcal{A}, p) > 0$. 
+The two last cases in (\ref{eq:risk_measure}) refer to the
+situations where the attacker is external or internal to $\mathcal{A}$ respectively.
+
+Traditionally, when publishing mean values on administrative areas, (some
+form of) group disclosure is discussed: whenever the variation of the individual
+values in the area is small, the mean value is a good estimate of each individual
+contribution. For an attacker to be able to use that notion, he needs to already have some
+idea about the variation of values over the area.\bigskip
+
+\textbf{Risk Measure in Practice}. The risk measure in (\ref{eq:risk_measure}) is defined for any arbitrary
+area $\mathcal{A}$. Ideally, the risk should be calculated using the ‘natural’ area that relates
+to an individual unit of the (target) population. In practice, it turns out to be
+difficult to define or derive such a ‘natural’ area. Therefore it is appropriate to
+use a predefined set of areas to be checked for disclosure: a set of grid cells,
+unions of grid cells or other ‘logical’ areas.

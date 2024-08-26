@@ -1,0 +1,192 @@
+\documentclass[openany,oneside]{book}
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{amsmath, bbm, empheq}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+\usepackage{ccicons}
+\usepackage{soul}
+\usepackage{capt-of}
+\usepackage{microtype}
+
+\usepackage[hidelinks]{hyperref}
+
+
+% glossary of terms
+\usepackage[toc,nonumberlist]{glossaries-extra}
+\setglossarystyle{listgroup}
+\makeglossaries
+\loadglsentries{glossary}
+\glsaddall
+
+\newrobustcmd{\xpul}[1]{\GlsXtrExpandedFmt{\ul}{#1}}
+\renewcommand{\glsxtrregularfont}[1]{\xpul{#1}}
+
+% Bibliography
+\usepackage{natbib}
+
+% Frames
+\usepackage[breakable, skins]{tcolorbox}
+\tcbset{skin=enhanced, colframe=white, colback=gray!10, arc=0pt, outer arc=0pt}
+
+\usepackage{color, colortbl}
+\definecolor{lgrey}{gray}{0.95}
+
+\title{Guidelines for Statistical Disclosure Control Methods Applied on Geo-Referenced Data}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{center}
+
+\sffamily
+\bfseries
+{\Large WP2 of STACE project}\bigskip
+
+{\Large Grant agreement 899218 – 2019-BG-Methodology}\vspace{72pt}
+
+{\Large Date}\bigskip
+
+\mdseries
+{\large August 31, 2024}\vspace{36pt}
+
+\bfseries
+{\Large Task T2.4}\bigskip
+
+\mdseries
+{\large Guidelines}\vspace{36pt}
+
+\bfseries
+{\Large Deliverable D2.9}\bigskip
+
+\mdseries
+{\large Guidelines on geo data}\vspace{72pt}
+
+\bfseries
+{\Large Sensitivity}\bigskip
+
+\mdseries
+{\large Available to general public}\vspace{90pt}
+\rmfamily
+
+\includegraphics{eu_funded.png}
+
+\end{center}
+
+\newpage
+
+\thispagestyle{empty}
+\noindent \textbf{\large Background}\bigskip
+
+\noindent These guidelines were written in the framework of the project on Statistical Methods and Tools for Time Series, Seasonal Adjustment and Statistical Disclosure Control (in short: STACE), co-financed by the European Union by means of grant agreement 899218 -- 219-BG-Methodology. Work package 2 of this project concerned a Center of Excellence on Statistical Disclosure Control (CoE on SDC) which was formed by the national statistical institutes (NISs) of The Netherlands, Germany, France, Austria, Iceland, Slovenia, Poland and Bulgaria.
+
+One of the goals of this CoE was to provide three guidelines for applying SDC. The CoE, together with Eurostat and the European Expert Group on Statistical Disclosure Control, decided on three topics for these guidelines: (1)~\textit{Guidelines for SDC methods for Census and Demographics Data}, (2)~\textit{Guidelines for SDC Methods Applied on Geo-Referenced Data} and (3)~\textit{Update of the General SDC Handbook}.
+
+A subgroup of the CoE on SDC was formed by the NSIs of Germany, Austria, France, The Netherlands and Poland. This subgroup worked on the \textit{Guidelines for SDC Methods Applied on Geo-Referenced Data}. The current document is the result of this work.
+
+\pagenumbering{arabic}
+\maketitle
+
+\thispagestyle{empty}
+
+\noindent \textbf{\large Contributing authors}\bigskip
+
+\noindent All chapters are the results of several contributing authors, either directly by providing content or indirectly by commenting earlier versions. In the list below, the chapters to which the authors provided content are mentioned.\bigskip\bigskip
+
+\noindent
+\begin{tabular}{p{0.5\linewidth}p{0.4\linewidth}}
+Martin M\"{o}hler\newline
+Destatis\newline
+\textit{martin.moehler@destatis.de}\newline
+Chapters~ \ref{sec:intro}, \ref{sec:ident}, \ref{sec:util}, \ref{sec:methods}, \ref{sec:cs_ckm}
+&
+Julien Jamme\newline
+Insee\newline
+\textit{julien.jamme@insee.fr}\newline
+Chapters~\ref{sec:risk}, \ref{sec:util}, \ref{sec:methods}\\
+&\\
+Edwin de Jonge\newline
+CBS\newline
+\textit{e.dejonge@cbs.nl}\newline
+Chapters~\ref{sec:risk}, \ref{sec:methods}
+&
+Andrzej M{\l}odak\newline
+Statistical Office in Poznań; \newline
+University of Kalisz\newline
+\textit{a.mlodak@stat.gov.pl}\newline
+Chapter~\ref{sec:util}\\
+&\\
+Johannes Gussenbauer\newline
+Statistics Austria\newline
+\textit{johannes.gussenbauer@statistik.gv.at}\newline
+Chapter~\ref{sec:methods}
+&
+Peter-Paul de Wolf\newline
+CBS\newline
+\textit{pp.dewolf@cbs.nl}\newline
+Chapter~\ref{sec:intro}\\
+\end{tabular}\bigskip\bigskip
+
+\noindent \textbf{\large Acknowledgments}\bigskip
+
+\noindent The authors would like to thank: Sarah Giessing (Destatis) for co-chairing project sessions; Reinhard Tent (Destatis) for proofreading and commentary on chapters \ref{sec:ckm} and \ref{sec:cs_ckm};  Clément Guillo (Insee) for his contribution to preparatory work on differencing risk issues (\ref{sec:risk_diff}); Fabio Ricciato (Eurostat) for implementation advice on the KWD measure.
+The authors also express their gratitude to Eurostat, in particular to Aleksandra Bujnowska, for their support during the project. Finally, the authors would like to thank the reviewers for their valuable comments. We have either taken their comments into account in the current version or listed them for future work to continuously improve the guidelines.
+\vfill
+
+\noindent\includegraphics[scale=0.5]{by-sa.png}
+
+\noindent 
+\textit{Guidelines for Statistical Disclosure Control Methods Applied on Geo-Referenced Data} \ccCopy{} 2024 by Martin M\"{o}hler, Julien Jamme, Edwin de Jonge, Andrzej M{\l}odak, Johannes Gussenbauer and Peter-Paul de Wolf is made available under a CC BY-SA 4.0 license (international). To view a copy of this license, visit \url{https://creativecommons.org/licenses/by-sa/4.0/}
+
+\newpage
+
+
+\tableofcontents
+
+\include{chapters/0-Introduction}
+
+\include{chapters/1-General_concepts}
+
+\chapter{Measuring Disclosure Risk for Geo-Referenced Data} 
+\chaptermark{Disclosure Risk}
+\label{sec:risk}
+    \input{chapters/12a_sensitivity}
+    \input{chapters/12-differencing_issues}
+
+\include{chapters/10-Utility_metrics}
+
+\chapter{Disclosure Control Methods for Geo-Referenced Data} \label{sec:methods}
+\chaptermark{Methods}
+    \input{chapters/16-quadtree}
+    \input{chapters/13-SpatialSmoothing}
+    \input{chapters/11-CKM_method}
+    \input{chapters/15-TRS_method}
+    \input{chapters/14-AuxiliaryMethods}
+    \input{chapters/17-methods_summaries}
+
+\chapter{Case Study: Population grids with the Cell Key Method} \label{sec:cs_ckm}
+\chaptermark{Case Study}
+    \input{chapters/11b-CKM_case_study}
+    
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\bibliographystyle{apalike}
+\bibliography{geo_guidelines_bib}
+
+\include{software_list}
+\printglossaries
+
+\end{document}

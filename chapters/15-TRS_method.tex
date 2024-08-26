@@ -1,0 +1,87 @@
+\section{Targeted Record Swapping} \label{sec:trs}
+
+Targeted Record Swapping (TRS) is a pre-tabular perturbation method. Its intended use is to apply a swapping procedure to a micro data set before generating a table.
+For a general outline of the method see \citet[5.6]{HundepoolEtAl2024}.
+
+Although TRS is applied solely on micro data, it is first of all considered a protection method used for tabular data. However, it can also be applied, of course, for protecting the micro data itself, although the experience to date indicates that it should not be used alone in this case: the swapping of pre-defined groups of units (spatial area, households, groups of economic entities, etc.) may not provide fully effective protection, and some additional perturbative tools -- e.g. microaggregation \citep[3.4.5]{HundepoolEtAl2024} -- may be needed. For an example of a combined application of protection methods, including TRS, to protect micro data see \citep{Mlodak2022}.
+TRS can be used for tables with and without spatial characteristics, with the prior case containing also grid data products or tables created by cross-tabulating with grid cells.   
+When applying TRS, the spatial character of the data can be taken into account to some degree. 
+
+
+\subsection{The TRS noise mechanism}
+
+TRS is applied directly to the underlying micro data before generating any table. As a consequence, the methodology of TRS is not dependent on the final table, be it count data or a magnitude table.
+
+Given are a number of units $i = 1, \ldots, N$ in a population, where each unit $i$ has $q$ characteristics or variables $\{x\}_{i,j} = \mathbf{X} \in \mathbb{R}^{N\times q}$.
+In addition, there exists a geographic hierarchy $\mathcal{G}^{1} \succ \mathcal{G}^{2} \succ \ldots \succ \mathcal{G}^{K}$ and each unit $i$ can be assigned to the $m$-th unique area $g_m^{k} \in \mathcal{G}^{k}$ in each hierarchy level $k$, $k=1,2,\ldots,K$.\footnote{
+    Depending on type and aim of the survey, the geographic hierarchy can be replaced here by another pre-defined hierarchy of groups of units, e.g. levels of a given key classification.}
+
+Risk values $r_{i,k}$ can be computed for each unit $i$ for each geographic level $k$, given the geographic hierarchy and a set of variables $\{x\}_{i,j}$.
+For an overview on such record-level risk measures see, for instance, \citet{GregoryOfer2011} or \citet{Skinner2009}.
+Additional, use-case specific parameters needed for the noise mechanism of TRS are:
+\begin{itemize}
+  \item A global swap rate $p$;
+  \item A risk value $r_{high}$ beyond which all units with $r_{i,k}$ are considered \textbf{high risk} for the geographic hierarchy level $k$;
+  \item A set of variables $\mathbf{x}_1,\ldots,\mathbf{x}_s$, available for each unit $i$, which are considered for similarity while swapping units. 
+\end{itemize}
+
+Starting at the highest hierarchy level $\mathcal{G}^{1}$, units $j$ for which $r_{j,1} \geq r_{high}$ are selected and randomly swapped with units belonging to other geographic areas at the first hierarchy levels.
+The selection is chosen by randomly selecting units using $r_{i,k}$ as sampling weights. In addition, variables $\mathbf{x}_1,\ldots,\mathbf{x}_s$ are respected during the selection such that the units which are swapped have the same value for these variables.
+Iterate through all succeeding hierarchy levels in the same fashion. At the last hierarchy level, additional units with $r_{i,K} < r_{high}$ are swapped to reach $p\cdot N$ overall swapped units.
+
+
+
+\subsection{Utility and risk aspects}
+
+TRS is applied on the micro data before constructing any tables or maps. The swapping of micro data records specifically targets records with higher risk of disclosure with respect to the dimensions of the final output.
+In the case where multiple maps are produced from the same micro data, it is recommended to apply the TRS only once and use the same perturbed micro data for all maps. This results in a delicate balance between utility and number of records swapped for each of the maps, as it is difficult to address many disclosure risks from different maps or tables while applying TRS only one time. 
+
+TRS is usually applied in such a way that the records swapped with each other are the same in numbers. That is, individuals or households of the same size are swapped with each other. Using TRS to protect a map or a grid data product displaying the total population is therefore ill-advised. TRS should only be considered if final maps contain a subset of the perturbed micro data set or the maps display an additional demographic dimension.  
+
+As for any method, it is advised to thoroughly tune parameters to balance information loss and disclosure risk. Possible tuning parameters are:
+
+\begin{itemize}
+\item The hierarchical depth $K$;
+\item The construction of the risk values $r_{i,k}$ and $r_{high}$; 
+\item The choice of $\mathbf{x}_1,\ldots,\mathbf{x}_s$; 
+\item The global swap rate $p$.
+\end{itemize}
+
+\noindent Both the hierarchical depth $K$ as well as $r_{i,k}$ and $r_{high}$ directly influence the overall number of swaps done during the procedure. A detailed hierarchy can imply many units with high risk on a low hierarchical level, which in turn leads to a larger number of swaps. Analysing the distribution of risk values on the lowest hierarchical level $r_{i,K}$ can give a good overview on the expected minimum number of swaps, overall and per geographic region. Overall, at least 
+%$\lceil \frac{\#\{i:r_{i,K}\geq r_{high}\}}{2N} \rceil$
+$\left\lceil (\#\{i:r_{i,K}\geq r_{high}\}) \,/\, 2N \right\rceil$
+swaps can be expected. This estimate also indicates whether the hierarchical depth $K$ might already be too detailed for the protection purpose.\newline
+
+\noindent The global swap rate $p$ can be choosen by estimating a pre-defined set of statistics per geographic region with varying $p$. A possible \textit{optimal} $p$ could be the maximum $p$ where this set of statistics remains \textit{similar} enough to the original estimates.
+As a rule of thumb, with a swap rate beyond 10\% the final information loss will in general be very high.\newline
+
+\noindent The set of variables $\mathbf{x}_1,\ldots,\mathbf{x}_s$ controls how similar swapped records are and thus can control the information loss to some extent. A very detailed set, however, can lead to no donor being found and thus failing to supply protection for the final tables. For real life applications it is usually favourable to supply multiple sets $\{\mathbf{x}_{t(1)},\ldots,\mathbf{x}_{t(s)}, t=1,\ldots , T\}$, such that units can be swapped if they agree on a very detailed set of variables, but if no donor is found, a less detailed set will be chosen to compare on. For real life applications, $T$ as well as $s$ will likely not be larger than 5. This functionality is implemented in the tools for TRS presented in \ref{sec:trstools} below. \newline
+
+\noindent Because the noise is applied to the micro data before building any tables, additivity between inner and marginal aggregates will always be preserved.
+Due to the design of the noise mechanism, TRS can not populate previously unpopulated cells. However, this does not hold for sub-populations, e.g. the number of individuals times citizenship by 1km grid cells.  
+
+\subsection{Tools}\label{sec:trstools}
+
+The TRS noise mechanism is implemented in the R package \texttt{sdcMicro}, function \texttt{recordSwap()}, as well as in $\mu$-Argus, alongside a multitude of parameters to fine-tune the procedure. Both R and $\mu$-Argus use the same implementation written in C++, which is available on GitHub\footnote{
+    https://github.com/sdcTools/sdcMicro/tree/master/src/recordSwap}.
+By default, the implementation applies $k$-anonymity to calculate risk values for each unit at each geographic level. This can, however, be changed by supplying pre-calculated risk values to the procedure.
+The computation of information loss is supported in the R-package \texttt{sdcMicro} with the functions \texttt{IL\_variables()} and \texttt{infoLoss()}.
+
+%\subsection{Summary}
+
+%Applying TRS to protect geo-referenced data has the following advantages and disadvantages:
+
+%\noindent\emph{Advantages:}
+%\begin{itemize}
+%    \item Method is simple to communicate.
+%    \item Consistency between maps built from the same micro data set
+%\end{itemize}
+
+%\noindent\emph{Disdvantages:}
+%\begin{itemize}
+%    \item Fine-tuning TRS to protect multiple maps built from the same micro data set can be challenging.
+%    \item Final maps might need an additional protection method.
+%\end{itemize}
+    
+
+\newpage

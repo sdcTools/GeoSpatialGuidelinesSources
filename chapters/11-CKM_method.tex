@@ -1,0 +1,231 @@
+\section{Cell Key Method} \label{sec:ckm}
+
+The \emph{Cell Key Method (CKM)} is a post-tabular so-called `sticky' noise mechanism that perturbs aggregates. The treatment here is built on \citet[5.4]{HundepoolEtAl2024}, where a more detailed description can be found. The original idea goes back to \citet{FraserWooton2005}.
+Notably, the spatial character of the data is not explicitly taken into account. Instead, the conceptual starting point is logical equivalence between a data product of small area aggregates (for example a grid map) and a table created by cross-tabulating with the small area identifier (e.g. the grid cell ID).
+For instance, a cross-tabulation of persons as indicated in table \ref{tab:intro_exa} would yield three distinct, but interrelated grid maps (or, equivalently, a raster with three bands).
+%: one with counts of persons below 50, one with persons aged 50 and above, one for the subtotal population count. 
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c c | c |}
+    \hline
+        Grid Cell & Age $< 50$ & Age $\geq 50$ & Total\\
+    \hline
+         N:2698400 E:4339500 &  &  & \\
+         N:2698400 E:4339600 &  &  & \\
+         N:2698400 E:4339700 &  &  & \\
+         \vdots & & & \\
+    \end{tabular}
+    \caption{Schematic example for two-way cross-tabulation with grid cells.
+    %, equivalent to three grid bands (one per category of the column attribute, including right margin).
+    }
+    \label{tab:intro_exa}
+\end{table}
+
+
+\subsection{The CKM noise mechanism} \label{sec:ckm_mecha}
+
+Maps of counts are common geospatial data products. We assume here that such products are created bottom-up by the aggregation of georeferenced statistical units (persons, households, or the like) to small areas, such as grid cells.
+
+Formally, we number the population units $i = 1, \dots, N$ and the areas $j = 1, \dots, M$. The area to which a unit $i$ is assigned is $\mathcal{A}_i \in \{1, \dots, M\}$. For the Cell Key Method, each population unit furthermore has a random \emph{record key} in the form of a real number $\mathrm{rk}_i \in [0 \,, 1]$. When counts per area are compiled, we always perform two aggregation steps instead of one: Counting the number of units and summing their record keys equivalently. Formally:
+\begin{equation}
+\begin{aligned}
+    X_j = \sum_{i=1}^N \mathbbm{1}(\mathcal{A}_i = j) \hspace{1.3cm} \forall j = 1, \dots, M \\
+    \mathrm{ck}_j := \left(\sum_{i=1}^N \mathbbm{1}(\mathcal{A}_i = j) \cdot \mathrm{rk}_i \right) \mod 1 \hspace{1.3cm} \forall j = 1, \dots, M
+\end{aligned}
+\end{equation}
+where $\mathbbm{1}(\,\cdot\,)$ is an indicator function, yielding 1 if unit $i$ is located in area $j$, 0 otherwise. Performing the operation `mod 1' keeps only the digits after the decimal point.\footnote{
+    An equivalent expression is $\mathrm{ck}_j := \left (\sum_{i=1}^N \mathbbm{1}(\mathcal{A}_i = j) \cdot \mathrm{rk}_i \right ) - \left\lfloor \sum_{i=1}^N \mathbbm{1}(\mathcal{A}_i = j) \cdot \mathrm{rk}_i \right \rfloor$, where $\lfloor\,\cdot\,\rfloor$ is the floor function (rounding to next-lowest integer).
+}
+$\mathrm{ck}_j$ is the \emph{cell key} of area $j$. It determines the noise used for perturbation of the original value $X_j$. The perturbed value $X'_j$ is then the sum of original cell value and associated noise; formally: $X'_j = X_j + \Delta X_j(\mathrm{ck}_j)$. Specifically, the noise value $\Delta X_j(\mathrm{ck}_j)$ is read from a \emph{perturbation table} (or \emph{p-table} for short), depending on the original count and the cell key. For the design of the p-table and other details on the method we refer the reader to \citet[5.4]{HundepoolEtAl2024}.
+
+The noise added by CKM to counts has the following important characteristics:
+\begin{itemize}
+    \item It has an expected value of zero (is unbiased). That means values do not get systematically smaller or larger. Furthermore, the method can be set up so that true zeros stay zero.
+    \item It has a fixed variance and is bounded by a \emph{maximum perturbation value}. E.g. with a maximum perturbation of 5, the perturbed value is always within $\pm 5$ of the original value.
+    \item It does not create negative counts (unless specified to do so). For example, to an original count of 2, no perturbation of $-3$ will be applied.
+    \item Because it is built on cell keys, the noise is consistent across different aggregations. For example, if a grid cell and an administrative region happen to encompass exactly the same units, then aggregating by cell ID and by region ID will yield the same perturbed value (same units, same noise).
+\end{itemize}
+
+
+\subsection{Utility aspects} \label{sec:ckm_util}
+
+\subsubsection{Non-additivity}
+
+Since noise is applied independently to inner and marginal aggregates, those often do not add up exactly. This applies  for summing over both attribute data and the spatial dimension. For example, adding up the counts of native and non-native inhabitants in an area may produce a result that deviates slightly from the combined number of inhabitants.
+Similarly, consider a population grid provided in two resolutions: 100m $\times$ 100m and 200m $\times$ 200m, where 4 small cells constitute a large one. Before CKM, summing the values of the 4 small cells yields that of the large cell. With CKM, a slight difference may result.
+
+It is important to understand that non-additivity, though unusual at first, is actually a benefit in terms of data accuracy: Summing up perturbed inner cells to create totals would necessarily imply a larger error margin for these totals. Furthermore, consistency between tables would be hard to reach. Non-additive output allows CKM to guarantee consistency and the same sharp error bounds for values at all levels of aggregation.\footnote{
+    Methods exist to restore additivity of perturbed tables ex post. They requires, however, significant computing effort and are only feasible for a small number of tabulations. Therefore, restoring additivity limits the flexibility of the approach and also tends to lead to higher information loss. For a more detailed discussion see \citet{EnderleGiessing2017}.
+}
+Nevertheless, the non-additivity property of CKM needs to be carefully explained to users. Recommendations and examples for this task can be found in \citet[~ch.5]{Guidelines3_CensusDemog}.
+
+In rare edge cases, non-additivity can mean that a single category becomes larger than the subtotal. For instance, in an area we may have 20 native inhabitants and a single non-native inhabitant. By chance it can occur that the subtotal (native + non-native) is changed from 21 to 19, whereas the `native' count stays at 20. Such small inconsistencies are known from other methods like random rounding. Their likelihood depends on the skewness of the count distribution, the frequency of very small counts and on the maximum noise encoded in the p-table.
+
+\subsubsection{Custom aggregates from noisy counts}
+
+Since CKM perturbs values independently, adding up noisy values also adds up errors. Suppose, for instance, a city quarter is made up of 5 ZIP codes. Manually summing the 5 counts of inhabitants after CKM leads to a margin of error for the sum that is 5 times as high as that of a single count value. The issue is equivalent to that found in rounding methods; see also \citet[5.5]{HundepoolEtAl2024}. Summing up rounded values can lead to large errors; the suggested alternative is rounding the (true) sum. Similarly, with CKM it is strongly recommended that all aggregates of interest (e.g. the count for the city quarter as a whole) are computed beforehand and CKM applied to them directly. The error for the marginal value is then bounded by the same maximum perturbation value as the contributing inner values.
+What is described here for custom sums also holds, of course, for custom differences. This is in fact an eminent aspect of the method, needed to protect against differencing (see section \ref{sec:ckm_risk}). 
+%Nevertheless, this issue may limit certain data products.\footnote{
+    %For example, an interactive grid map that allows users to freely select any number of cells and display the sum of noisy cell counts would be afflicted in the way described here.}
+
+\subsubsection{Ratios of noisy counts}
+
+The spatial distribution of pretty much all counts is strongly correlated to that of the overall population count. This is a common issue in the creation of statistical maps. For example, mapping the number of people above a certain age threshold tends to approximately replicate the general population distribution, which is not very informative. Better information is conveyed by mapping \emph{ratios} -- like the share of old people among all inhabitants.
+
+For these ratios we may use noisy counts in both the enumerator and denominator, i.e. $X'/Y'$ instead of $X/Y$. If the counts involved are small, the relative error in both can be relatively large and hence the ratio may be unreliable. The problem is discussed in detail in \citet{EnderleEtAl2018}. Generally speaking, if the counts involved are large, then the ratio will be accurate. If either or both counts are small, accuracy may be low. When plotting a map of ratios, the count distribution of enumerator and denominator should be assessed for the same region in order to identify if and where such problems may occur. Areas with small counts can then, for instance, be marked by a flag as `imprecise', or the spatial support can be scaled up (e.g. from 100m $\times$ 100m to 500m $\times$ 500m grid cell) to ensure a smaller relative error throughout.
+
+\subsubsection{False-empty cells}
+
+Safe aggregates usually require protection of \emph{small counts}. In order to assure that added noise is unbiased it is often required that such small values have a certain probability of being perturbed to \emph{zero}. Changing very small counts (for instance 1 or 2) to 0 can even be an explicit requirement for the p-table to ensure sufficient protection \citep{GiessingHoehne2010}.
+However, if one then treats areas with artificial zero-counts the same way as originally unpopulated areas, this slightly distorts the spatial pattern in sparsely populated areas. The issue somewhat mirrors that of \emph{suppressing} small counts.
+
+\subsubsection{CKM and the Modifiable Areal Unit Problem}
+
+As noted above, the perturbation that CKM adds to a true count is defined in absolute terms, hence the expected \emph{relative} perturbation depends on the level of aggregation. A map of many small counts is changed relatively more than a map of a few large counts. This is independent of the number of \emph{sensitive} cells (as per the criteria in \ref{sec:risk_aggr}), since CKM does not distinguish between sensitive or non-sensitive values.
+
+\subsubsection{Treating hierarchical relations between units}
+
+It is not uncommon that data is collected on several hierarchically linked, jointly geo-referenced units. The most common example is a population and housing census, where we assume n:1 relationships (one or more people per building, exactly one building per person).\footnote{
+    Geo-references in census contexts are assigned by address, hence the lower-level unit (person, family, or household) inherits its geo-reference from the higher-level unit (building).} 
+There is therefore a logical connection: if an area contains at least one person, it \emph{must} contain at least one building. We often want to preserve such logical connections as much as possible. For instance, it would be inconvenient if the person count in a small area were changed from 1 to 0, but the corresponding building count from 1 to 3. This would violate the constraint that all buildings must contain at least 1 person. But it can happen if record keys are drawn independently for both types of units.
+A small example is shown below: records for two types of units (persons and buildings) are held in separate microdata files, but linked by IDs. Record keys are first drawn independently for both data sets.
+
+Consider the units located in grid cell (N:100 E:100) in the example data (shown in blue). If we aggregate separately persons and buildings by grid cell as explained in \ref{sec:ckm_mecha}, we get counts of 1 in each case with cell keys of 0.1265\dots and 0.8910\dots respectively. Depending on the p-table this could lead to a situation as described before, where the number of buildings is increased, that of persons changed to zero.
+Such paradoxes cannot always be prevented. However, we can limit their occurrence. 
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c |}
+    \hline
+        Person ID & Building ID & Grid Cell & Record Key \\
+    \hline
+            \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{N:100 E:100} & \textcolor{blue}{.126547051} \\
+    \hline
+            2     &   2      &     N:200 E:100     & .650998366 \\
+    \hline
+            3     &   2      &     N:200 E:100     & .078194553 \\
+    \hline
+            4     &   2      &     N:200 E:100     & .970612172 \\
+    \hline
+            5     &   3      &     N:200 E:100     & .507300613 \\
+    \hline
+            6     &   3      &     N:200 E:100     & .040133080 \\
+    \hline
+    \end{tabular}\\ \vspace{10pt}
+    \begin{tabular}{| c | c | c |}
+    \hline
+        Building ID & Grid Cell & Record Key \\
+    \hline
+          \textcolor{blue}{1} & \textcolor{blue}{N:100 E:100} & \textcolor{blue}{.891086490} \\
+    \hline
+          2      &    N:200 E:100      & .689734612 \\
+    \hline
+          3      &    N:200 E:100      & .479127417 \\
+    \hline
+    \end{tabular}
+    %\caption{Caption}
+    %\label{tab:my_label}
+\end{table}
+
+This time, we only draw record keys for persons. The record key for buildings is created in a pre-aggregation step as the cell key derived from aggregating persons by building.\footnote{
+    E.g. the (new) record key of building 3 would be $.5073\ldots + .0401\ldots = .5474\ldots$, the sum of the record keys of its two inhabitants from the `person' microdata.
+}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c |}
+    \hline
+        Person ID & Building ID & Grid Cell & Cell Key \\
+    \hline
+            \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{N:100 E:100} & \textcolor{blue}{.126547051} \\
+    \hline
+      \{2, 3, 4\} &   2      &     N:200 E:100     & .699805091\\
+    \hline
+      \{5, 6\}    &   3      &     N:200 E:100     & .547433693 \\
+    \hline
+    \end{tabular}\\ \vspace{10pt}
+    $\Rightarrow$ \quad
+    \begin{tabular}{| c | c | c |}
+    \hline
+        Building ID & Grid Cell & Record Key \\
+    \hline
+          \textcolor{blue}{1} & \textcolor{blue}{N:100 E:100}  & \textcolor{blue}{.126547051} \\
+    \hline
+          2      &    N:200 E:100      & .699805091 \\
+    \hline
+          3      &    N:200 E:100      & .547433693 \\
+    \hline
+    \end{tabular}
+    %\caption{Caption}
+    %\label{tab:my_label}
+\end{table}
+
+This way of treating n:1 relations in the data can have several advantages. 
+\begin{itemize}
+    \item The danger of showing a cell as inhabited for one unit, but uninhabited for the related one, is lowered.
+    \item The approach naturally generalizes to nested hierarchies (persons in a household, households in a house, etc.)
+    \item It is often inherently desirable to treat logically equivalent aggregates the same in perturbation. For instance, a count of single-person households would be perturbed the same as the count of single persons within these households. By building record keys in intermediate aggregation steps, such 1:1 relationships are guaranteed to receive the same noise.
+\end{itemize}  
+
+\subsection{Risk aspects} \label{sec:ckm_risk}
+
+CKM creates uncertainty about the true value of all area aggregates. While the uncertainty must be small enough to allow for reliable information, it must also be large enough to protect sensitive cells. This trade-off is realized by a given parameterization of the p-table -- for a detailed discussion see \cite[~ch.4]{Guidelines3_CensusDemog}. To discourage attempts of inferring true values, the central parameters (here: noise variance and noise maximum) are generally not published. 
+%\citep{DupreEtAl2022}.
+
+\subsubsection{Protection of small counts}
+
+Areas with associated count values of 1 or 2 are often considered particularly sensitive, as noted in section \ref{sec:risk_aggr}. The CKM parameters can be set up in such a way that no 1s or 2s remain in the output. For example, with a maximum perturbation value of 3 a true area count of 2 may appear as 0, 3, 4, or 5, each with a certain probability. If we still allow 1s or 2s in the output, the method makes it uncertain whether they are veridical: Assuming again a maximum perturbation of 3, an observed 1 could have been a 1, 2, 3, or 4 before perturbation.
+
+\subsubsection{Protection against geographic differencing}
+
+To protect against the issue of geographic differencing (see section \ref{sec:risk_diff}), CKM relies on the loss of accuracy for custom sums and differences described in the previous subsection. In fact, this form of protection was the original intent behind the method, as proposed by \cite{FraserWooton2005}.
+
+Consider the case of a single area $\mathcal{A}$, fully encompassed by another $\mathcal{B}$; the area values are $X_{\mathcal{A}}$ and $X_{\mathcal{B}}$. The value of the residual area $X_{\mathcal{B}\setminus\mathcal{A}} = X_{\mathcal{B}} - X_{\mathcal{A}}$ is the target of differencing. When CKM is applied, both area values are perturbed \emph{independently} to $X'_{\mathcal{A}}$ and $X'_{\mathcal{B}}$, as described in section \ref{sec:ckm_mecha}. The noise %$\Delta X$ 
+added to an original $X$ to derive  the perturbed $X'$ has a given fixed variance encoded in the p-table.
+%; we denote it by $\mathrm{Var}(\Delta X)$
+By standard results, the noise of the difference $X'_{\mathcal{B}\setminus{\mathcal{A}}} = X'_{\mathcal{B}} - X'_{\mathcal{A}}$ has twice the variance of the noise of the individual components.
+%has variance $\mathrm{Var}(\Delta X) + \mathrm{Var}(\Delta X)$, twice as high as for any of the single area aggregates.
+The same holds for the maximum perturbation value.\footnote{
+    Suppose the perturbed values $X'_{\mathcal{A}}$ and $X'_{\mathcal{B}}$ are within $\pm 5$ of their respective original values. Then the difference $X'_{\mathcal{B}} - X'_{\mathcal{A}}$ can vary between $-10$ (both $X_{\mathcal{A}}$ and $X_{\mathcal{B}}$ perturbed with $-5$) and $+10$ (both $X_{\mathcal{A}}$ and $X_{\mathcal{B}}$ perturbed with $+5$) around the true differenced value.}
+If the two area systems were perturbed with different p-tables, each having its own variance and maximum perturbation value, the variance and maximum of the noise for the difference would be given by the sum of the variances and maxima respectively. Even if one of the area values (encompassed or encompassing) is perturbed and the other is not, the differenced value inherits the uncertainty associated with the perturbed area. 
+The uncertainty around the differenced value is even higher, if either the encompassing or the encompassed area is a combination of several smaller areas.\footnote{
+    For instance, suppose we sum the values of 10 different grid cells to derive an encompassing area around an administrative region and both the grid data and the administrative data is protected by CKM noise with constant variance $\mathrm{Var}(\Delta X)$ and maximum perturbation value $D$. Then the differenced value has variance $(10 + 1) \cdot \mathrm{Var}(\Delta X)$ and is within $\pm (10 + 1) \cdot D$ of its true value. The more independently perturbed values are contributing (i.e. the more complex the differencing), the higher the uncertainty of the result.}
+CKM thus generally provides effective protection against geographic differencing.\\
+
+As with all disclosure control methods, there exist edge cases where the protection is less than ideal. In general, knowledge of the maximum perturbation value allows the computation of feasibility intervals. It is suggested that the CKM parameters are not made public. Furthermore, certain rare cases can still allow successful differencing, especially when inner and outer area are both perturbed by the maximum amount, but in opposite directions. Such issues can (and should) be taken into account when setting up the p-table, as described in \cite{EnderleEtAl2020}.\\
+
+When aggregates are published for several, partially overlapping geographies, it is important to compute them from the same microdata. Logically identical aggregates then receive the same cell key and therefore the same noise. For instance, if all people in a village belong to the same postal code, aggregating their record keys once by the village's official regional key, once by postal code, yields in both cases the same cell key, as intended. If both sets  of geographic information are kept in \emph{separate} microdata files, one should \emph{not} draw two independent sets of record keys, but rather (a) draw them for one, then join them to the other, or (b) combine the data sets, then draw record keys. Otherwise we could end up with two (or more) values for one and the same ground truth. 
+This would be both confusing as well as a potential risk factor, since it provides more information on the true confidential value.
+
+\subsection{Tools and Software}
+
+The Cell Key Method can be implemented using the $\tau$-\emph{Argus} software \citep{QuickRefTau42x} or the R package \texttt{cellKey} \citep{cellkey_meindl}. The former tool includes some information loss measures and some visual feedback on the added noise using graded colors. The latter tool also includes convenience functions, like automatically computing several information loss statistics.
+In either case, the p-table must be supplied. For its creation the R package \texttt{ptable} may be used. For both R packages, useful vignettes are found online to get users started.\bigskip
+
+%\subsection{Summary} \label{sec:ckm_summa}
+
+%In summary, applying CKM to protect small area aggregates has the following advantages and disadvantages:\\
+
+%\emph{Advantages:}
+%\begin{itemize}
+%    \item Effective protection against differencing, including geographic differencing.
+%    \item Published totals and subtotals have the same accuracy as inner values; since they are perturbed independently, errors do not build up.
+%    \item Allows for comparatively flexible tabulation / mapping of spatial data. Change of Support problems (like with local aggregation of areas) are avoided.
+%    \item If the perturbation table is set up such that counts of zero are not perturbed, there will be no artificially inhabited cells. Avoids implausible locations, since values are not moved in space, just increased or decreased. Works for isolated areas (does not need populated neighbourhood).
+%    \item Coherent across multiple data products / publications (same units, same noise).
+%\end{itemize}
+%\emph{Disadvantages:}
+%\begin{itemize}
+%    \item Not additive. Inner cells can (by chance) become larger than marginals.
+%    \item Manually calculated aggregates over several perturbed areas (e.g. sums of perturbed grid cells) can come with large errors. Same holds for derived statistics of two or more independently perturbed values for the same area (like ratios).
+%    \item Might create artificially uninhabited cells.
+%    \item Changes also values of cells that are not at risk.
+%    \item Risks of successful averaging attacks \citep{AsgharKaafar2020} should be controlled. This is done by considering the complexity and flexibility of the planned outputs when choosing method parameters \citep{Bach2022}.
+%\end{itemize}
+
+Case studies from different countries that apply the Cell Key Method to geographic grid data are \citet{Kraus2021}, \citet{Dekany2019}, as well as \citet{LukanSmukavec2017}. A reproducible application to a chunk of German census-like grid is provided in this document in section \ref{sec:cs_ckm}.
+
+A summary of strengths and weaknesses of the Cell Key Method can be found in section \ref{sec:strengthweak}.
+
+\newpage

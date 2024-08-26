@@ -1,0 +1,162 @@
+\setglossarypreamble{\textit{As noted in the introduction, this document builds on the Handbook on Statistical Disclosure Control. For the sake of brevity, general terms from Statistical Disclosure Control (SDC) are usually not repeated here. The reader may wish to consult additionally the extensive glossary in \citet{HundepoolEtAl2024}.}}
+
+\newglossaryentry{additivity}{
+  name = {additivity},
+  description = {The property that values in a table add exactly to their corresponding row totals or column totals. For some \glspl{posttab}, like rounding or the Cell Key Method, the resulting data cannot guarantee additivity.}
+}
+
+\newglossaryentry{adminarea}{
+  name = {administrative area},
+  description = {An area or region, the extent of which is determined politically for administrative purposes. Typical examples are states, districts, or towns. Systems of administrative areas in the European Statistical System include the \gls{nuts} levels 1-3 as well as \gls{lau}. Administrative areas are typically of irregular shape and heterogeneous in size, as opposed to \glspl{gridcell}.}
+}
+
+\newglossaryentry{attacker}{
+  name = {attacker},
+  description = {/ data attacker, also called `intruder' in \citet{HundepoolEtAl2024}, denotes a hypothetical agent trying to illegitimately infer information on individual units from published statistical products. The goal of Statistical Disclosure Control is to prevent such `attacks' from being successful.}
+}
+
+\newglossaryentry{cosp}{
+  name = {change-of-support problem},
+  description = {(COSP) denotes, in one common formulation, the problem of combining or comparing two data sources that do not have the same \gls{spatialsupport}, for example aggregates from two subsequent censuses, when the extent of the \gls{adminarea} of interest has changed in between. Another example is trying to jointly analyze two variables, one of which is available in a 100m $\times$ 100m \gls{grid}, the other only in 1km $\times$ 1km.}
+}
+
+\newglossaryentry{choropleth}{
+  name = {choropleth map},
+  description = {Common thematic map type where areas are colored according to the area-specific magnitude of some statistic. A way to visualize \glspl{spatialdist}.}
+}
+
+\newglossaryentry{cluster}{
+  name = {cluster},
+  description = {/ clustering refers to the tendency of \gls{georeference}d units to occur in relatively close proximity to one-another, forming heaps or `clusters' of observations. `Clustered' units tend to lie geographically close together, while `disperse' units display greater distances between one-another.}
+}
+
+\newglossaryentry{distrdist}{
+  name = {distributional distance measure},
+  description = {Metric that aims to quantify directly, in a single number, how much a \gls{spatialdist} has been changed by applying disclosure control.}
+}
+
+\newglossaryentry{directident}{
+  name = {direct identifier},
+  description = {A variable that, if known, identifies a unit immediately. In the context of geo-referenced data, exact addresses and the corresponding exact point coordinates are often regarded as direct identifiers. See also the entry for `formal identifier' in \citet{HundepoolEtAl2024}.}
+}
+
+\newglossaryentry{etrs89laea}{
+  name = {ETRS89-LAEA},
+  description = {Coordinate reference system for the EU-wide equal area standard \gls{grid} in the \gls{inspire} framework. The datum is ETRS89 \textit{(European Terrestrial Reference System 1989)} and LAEA (\textit{Lambert Azimuthal Equal Area)} is the map projection; see \citet{INSPIRE2023}.}
+}
+
+\newglossaryentry{georeference}{
+  name = {geo-reference},
+  description = {is used here to denote a variable in a data set that geographically locates statistical units. Examples for geo-references are point-coordinates and geographic \gls{gridcell} identifiers. More generically, may also include variables that encode small-scale \glspl{adminarea}, such as a \gls{lau} key or a postal code.}
+}
+
+\newglossaryentry{georefdata}{
+  name = {geo-referenced data},
+  description = {Data that includes a \gls{georeference}.}
+}
+
+\newglossaryentry{infoloss}{
+  name = {information loss},
+  description = {Protecting data against the risk of disclosure requires data to be modified in some way (by suppression or perturbation). Hence, the information contained in the original data is not perfectly preserved. The information loss measures the gap between the information of the protected data and the information of the original one. At a given disclosure risk level, the aim is to choose the way to minimize the loss of information.}
+}
+
+\newglossaryentry{inspire}{
+  name = {INSPIRE},
+  description = {\textit{(Infrastructure for Spatial Information in the European Community)} European Union directive establishing a common framework for geodata and related metadata in member states. Among other standards, INSPIRE provides for the European standard \gls{grid} \citep{INSPIRE2023}, a harmonized use of map projections and coordinate reference systems; for more information see e.g. \citet{CetlEtAl2019}.}
+}
+
+\newglossaryentry{geocoder}{
+  name = {geocoder},
+  description = {Software application used for \gls{geocoding}.}
+}
+
+\newglossaryentry{geocoding}{
+  name = {geocoding},
+  description = {Assigning geographic coordinates to address data available as structured text, using a \gls{geocoder}. The assigned point-coordinates may then be used to create small-scale \glspl{georeference}, such as \glspl{gridcell} for statistical units; see also \citet[p.190f.]{HaldorsonMostrom2019}}
+}
+
+\newglossaryentry{grid}{
+  name = {grid},
+  description = { / geographic grid denotes a \gls{spatialsupport} system made up of many \glspl{gridcell}. Used here in accordance with the \gls{inspire} standard \citep{INSPIRE2023}.}
+}
+
+\newglossaryentry{gridcell}{
+  name = {grid cell},
+  description = {/ grid square / grid tile is a spatial reference unit of regular shape (usually a square), therein differing from irregularly shaped \glspl{adminarea}. Grid cells are basic units to compile and publish \gls{georefdata} on. A small grid cell covers, for instance, an area of 100m $\times$ 100m. Many cells together form a \gls{grid}.}
+}
+
+\newglossaryentry{kanon}{
+  name = {k-anonymity},
+  description = {is a property of a microdata file that guarantees that each individual is similar to at least $k-1$ other individuals on some key variables. Key variables are chosen in advance, as assumed to be known by a potential \gls{attacker}.}
+}
+
+\newglossaryentry{lau}{
+  name = {LAU},
+  description = {(\textit{Local Administrative Units)} System of small-scale \glspl{adminarea} in the European Statistical System, below the smallest \gls{nuts} regions; typically municipality-level or equivalent.}
+}
+
+\newglossaryentry{nestedgeo}{
+  name = {nested geographical areas},
+  description = {One geographical area is nested in another one if the former is entirely geographically contained in the latter. Two sets of areas are geographically nested if each area of one set is nested in one and only one area of the second set.}
+}
+
+\newglossaryentry{noisedist}{
+  name = {noise distribution},
+  description = {In \gls{perturbation}-based disclosure control methods the statistical distribution from which random noise values are drawn.}
+}
+
+\newglossaryentry{nuts}{
+  name = {NUTS},
+  description = {(\textit{Nomenclature des unités territoriales statistiques)} 3-level hierarchical system of \glspl{adminarea} in the European Statistical System.}
+}
+
+\newglossaryentry{perturbation}{
+  name = {perturbation},
+  description = {Increasing confidentiality by changing data, either by swapping or by adding random noise.}
+}
+
+\newglossaryentry{posttab}{
+  name = {post-tabular method},
+  description = {Disclosure control methods that act on aggregates after they have been computed from the underlying microdata (as opposed to \glspl{pretab}).}
+}
+
+\newglossaryentry{pretab}{
+  name = {pre-tabular method},
+  description = {Disclosure control methods that act directly on the microdata, before aggregates are computed (as opposed to \glspl{posttab}).}
+}
+
+\newglossaryentry{remotesens}{
+  name = {remote sensing},
+  description = {refers to techniques for earth observation from afar, such as aerial photography or satellite imagery. When available in sufficient quality and level of detail, remote sensing data can be used to supplement \gls{georefdata}, for example to find out how many dwellings are located in a geographic \gls{gridcell} and hence to how many dwellings the statistic published for said cell refers. While potentially useful for analyses, such techniques could also be used by an \gls{attacker} to infringe on confidentiality.}
+}
+
+\newglossaryentry{reversegeoc}{
+  name = {reverse geocoding},
+  description = {Assigning readable addresses to point coordinates, thereby `reversing' the \gls{geocoding} procedure.}
+}
+
+\newglossaryentry{spatialautocorr}{
+  name = {spatial autocorrelation},
+  description = {Are the average living standards of nearby spatial entities more similar than those of more distant entities? Spatial autocorrelation measures the correlation of a variable with itself due to the spatial location of the observations. It is positive when geographical neighbours share similar values, negative when neighbours tend to have dissimilar values and null in the case of a spatially random distribution. The intensity of spatial autocorrelation can be measured by  Moran's $\mathcal{I}$ for example.}
+}
+
+\newglossaryentry{spatialdist}{
+  name = {spatial distribution},
+  description = {The pattern of how some measured phenomenon varies geographically between regions or within a region. Insofar as the spatial distribution, e.g. visualized in a map, is typically of primary interest when viewing or analyzing \gls{georefdata}, disclosure control methods applied to such data should aim to preserve it as much as possible.}
+}
+
+\newglossaryentry{spatialsupport}{
+  name = {spatial support},
+  description = {The set of spatial reference units over which a \gls{spatialdist} is observed. For example, all inhabited \glspl{gridcell} in an area of interest. Trying to combine data with incompatible spatial support leads to the \gls{cosp}.}
+}
+
+\newglossaryentry{stickynoise}{
+  name = {sticky noise},
+  description = {In \gls{perturbation}-based disclosure control methods denotes the property that aggregates for one and the same set of participants receive the same perturbation when they occur in independent tabulations or in successive computations of the same table (`same units, same noise').}
+}
+
+\newglossaryentry{stickypop}{
+  name = {sticky population},
+  description = {Following \citet{ElliotEtAl1998} the ``tendency of individuals to \gls{cluster} even at low levels of geography" according to some shared attributes.}
+}
+

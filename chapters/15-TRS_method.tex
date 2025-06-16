@@ -48,7 +48,6 @@ As for any method, it is advised to thoroughly tune parameters to balance inform
 \end{itemize}
 
 \noindent Both the hierarchical depth $K$ as well as $r_{i,k}$ and $r_{high}$ directly influence the overall number of swaps done during the procedure. A detailed hierarchy can imply many units with high risk on a low hierarchical level, which in turn leads to a larger number of swaps. Analysing the distribution of risk values on the lowest hierarchical level $r_{i,K}$ can give a good overview on the expected minimum number of swaps, overall and per geographic region. Overall, at least 
-%$\lceil \frac{\#\{i:r_{i,K}\geq r_{high}\}}{2N} \rceil$
 $\left\lceil (\#\{i:r_{i,K}\geq r_{high}\}) \,/\, 2N \right\rceil$
 swaps can be expected. This estimate also indicates whether the hierarchical depth $K$ might already be too detailed for the protection purpose.\newline
 
@@ -65,23 +64,6 @@ Due to the design of the noise mechanism, TRS can not populate previously unpopu
 The TRS noise mechanism is implemented in the R package \texttt{sdcMicro}, function \texttt{recordSwap()}, as well as in $\mu$-Argus, alongside a multitude of parameters to fine-tune the procedure. Both R and $\mu$-Argus use the same implementation written in C++, which is available on GitHub\footnote{
     https://github.com/sdcTools/sdcMicro/tree/master/src/recordSwap}.
 By default, the implementation applies $k$-anonymity to calculate risk values for each unit at each geographic level. This can, however, be changed by supplying pre-calculated risk values to the procedure.
-The computation of information loss is supported in the R-package \texttt{sdcMicro} with the functions \texttt{IL\_variables()} and \texttt{infoLoss()}.
-
-%\subsection{Summary}
-
-%Applying TRS to protect geo-referenced data has the following advantages and disadvantages:
-
-%\noindent\emph{Advantages:}
-%\begin{itemize}
-%    \item Method is simple to communicate.
-%    \item Consistency between maps built from the same micro data set
-%\end{itemize}
-
-%\noindent\emph{Disdvantages:}
-%\begin{itemize}
-%    \item Fine-tuning TRS to protect multiple maps built from the same micro data set can be challenging.
-%    \item Final maps might need an additional protection method.
-%\end{itemize}
-    
+The computation of information loss is supported in the R-package \texttt{sdcMicro} with the functions \texttt{IL\_variables()} and \texttt{infoLoss()}.   
 
 \newpage

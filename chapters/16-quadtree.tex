@@ -105,7 +105,7 @@ Thus, aggregating these two tiles at the $8$~km resolution level is not sufficie
 \begin{tabular}[t]{rrrrrr}
 \toprule
 \multirow{2}{*}{Size of squares (meters)} & \multicolumn{2}{c}{Squares} & \multicolumn{3}{c}{Households} \\
-\cmidrule{2-3} \cmidrule{4-6}
+\cmidrule(lr){2-3} \cmidrule(lr){4-6}
  & NB & \% & Total & \% & Mean \\
 \midrule
 200 & 157 & 22 & 9~662  &  3 & 62\\
@@ -128,7 +128,6 @@ Such cases justify an approach consisting of setting a minimal resolution level,
 
 \subsection{Utility Aspects}
 
-% Show that utility decreases with the aggregation level
 Using the Hellinger distance (see \ref{sec:util_DD_hd}) or the Kantorovich-Wasserstein distance (see \ref{sec:util_DD_kwd}), \cite{GussenbauerEtAl2023} demonstrated on several examples that at the same protection level, the quadtree method resulted in a stronger loss of information compared to a method of removing cells containing confidential information, but less significant than smoothing.
 
 By choosing a minimal resolution level in advance, the same article shows the expected effect on utility: by allowing the aggregation of confidential cells at an additional level, the Hellinger distance increases significantly in most cases. This experimentation illustrates the importance of setting a minimal resolution level as a stopping criterion for the aggregation process to maintain good utility. However, such a choice requires additional measures to protect any remaining confidential cells.
@@ -197,7 +196,6 @@ However, they differ in how they present the final information: \texttt{sdcSpati
     % \begin{figure}
     % \centering
     \includegraphics[width=\linewidth]{figures/Quadtree/adaptation_example_variante_sdcspatial_fix.png}
-    %\vspace{-0.5cm}
     \caption{Result of \texttt{sdcSpatial} if applied on the grid of the example displayed in Fig.\ref{fig:quadtree_aggregation}.}
     \label{fig:quadtree_sdcspatial_result}
     % \end{figure}

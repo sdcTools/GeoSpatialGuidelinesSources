@@ -5,7 +5,7 @@ Spatial data can be present in statistical output in many ways. Commonly used ou
 \begin{itemize}
     \item Microdata files that contain spatial information; ranging from coarse classifications like NUTS to detailed coordinates of where the individual units reside;
     \item Tables where one of the spanning variables is location-related; ranging from administrative regions to squared grids;
-    \item Cartographic maps where the distribution of a variables is plotted; ranging from choropleth maps to density plots.
+    \item Cartographic maps where the distribution of variables is plotted; ranging from choropleth maps to density plots.
 \end{itemize}
 
 The current guidelines describe some measures to specify the disclosure risks involved with publications including a spatial dimension, statistical disclosure control methods to reduce the risk of disclosure while maintaining (some of) the utility, and ways to assess the amount of utility / information lost in the process.
@@ -25,7 +25,7 @@ There are at least two reasons for providing guidelines targeting specifically a
 A second reason for targeted guidelines is that even though a lot of SDC methods are available for publishing data either as microdata or as aggregated data, these methods in general do not take into account the spatial character of the variables. The current guidelines will present methods that \textit{do} take into account the spatial character. Moreover, some methods can be applied to produce cartographic maps without having to protect the underlying data before the plotting: they provide means to directly plot variables on a map using the unprotected underlying data.\bigskip
 
 These guidelines extend and specify the general advice on statistical disclosure control methodology collected in \citet{HundepoolEtAl2024}. Readers who are new to SDC or who seek further information on related methods and concepts may wish to also refer to the more fundamental guidance there.
-Moreover, additional information on general statistical disclosure control methodology targeted at census publication can be found in the \emph{Guidelines for SDC Methods for Census and Demographics Data} \citep{HundepoolEtAl2024}. \bigskip
+Moreover, additional information on general statistical disclosure control methodology targeted at census publication can be found in the \emph{Guidelines for SDC Methods for Census and Demographics Data} \citep{Guidelines3_CensusDemog}. \bigskip
 
 This document is structured as follows: We begin in Chapter \ref{sec:ident} with some preliminary concepts and considerations concerning the problem of SDC for geo-referenced data. Specific aspects of disclosure risk for such data are introduced in Chapter \ref{sec:risk}, followed by measures of information loss from SDC in Chapter \ref{sec:util}. In Chapter \ref{sec:methods} we suggest a range of methods to accomplish a reduction of disclosure risk, with a special focus on aggregates in geographic grid cells. Finally, several of the concepts and metrics introduced will be applied in an illustrative case study in Chapter \ref{sec:cs_ckm}.\bigskip
 

@@ -168,10 +168,7 @@ For any given measure introduced so far we get $\mathrm{Dist.}(\mathbf{X}, \math
 \end{tcolorbox}
 
 Generally speaking, such concepts as `further away' and `shifted geometrical center' are not covered by the distributional distances of section \ref{sec:util_DD_hd}. They do not explicitly take the \emph{spatial dimension of error} into account. The Kantorovich-Wasserstein distance (KWD), on the other hand, does this, by conceptualizing the distance between distributions as a problem of \emph{optimal transport}.
-The idea is to transform one distribution, say the perturbed $X'$, into the other, say the original $X$, by transporting units (or, more generally: distribution mass) around the map, until both distributions look alike. Each act of transportation is evaluated at `costs' equivalent to the geographical distance covered.
-%\footnote{
-    %Shifting 2 units by 3 cells to the left 'costs' $2 \cdot 3 = 6$, etc. We consider here for the geographical distance the Euclidean, or straight-line distance, but KWD generalizes to others, such as the Manhattan distance. Units that do not need to be moved are evaluated at zero 'costs'.}
-KWD is defined as the total cost of the `cheapest' way to perform such a transformation.
+The idea is to transform one distribution, say the perturbed $X'$, into the other, say the original $X$, by transporting units (or, more generally: distribution mass) around the map, until both distributions look alike. Each act of transportation is evaluated at `costs' equivalent to the geographical distance covered. KWD is defined as the total cost of the `cheapest' way to perform such a transformation.
 
 Formally, computing KWD involves solving the following optimization problem. We denote the shifted distribution mass (e.g. a certain number of population units) between grid cell $j$ and $k$ by $\Delta X_{jk}$. The (spatial) distance between these grid cells is $d_{jk}$. We then need to solve:
 \begin{equation} \label{eq:util_kwd}
@@ -229,9 +226,7 @@ where $\mathrm{MedADM}(X)=\mathrm{Med}_{j=1,2,\ldots,M}|X_j-\bar{X}|$ is the med
     \mathrm{MMR^{**}}\,(X) = \frac{\mathrm{MeanAD}(X)}{\mathrm{Med}(X)},
 \label{MMRxx}
 \end{equation}
-where 
-%$\mathrm{MeanAD}(X)=\frac{\sum_{j=1}^M{|X_j-\mathrm{Med}(X)|}}{M}$. 
-$\mathrm{MeanAD}(X)= \frac{1}{M} \sum_{j=1}^M |X_j-\mathrm{Med}(X)|$ is the mean absolute deviation from the median.
+where $\mathrm{MeanAD}(X)= \frac{1}{M} \sum_{j=1}^M |X_j-\mathrm{Med}(X)|$ is the mean absolute deviation from the median.
 However, the problematic case of $\mathrm{Med}(X) = 0$ still exists both in (\ref{MMRx}) and in (\ref{MMRxx}). One can try to overcome it by assuming instead of a ``pure" median in (\ref{MMR}), (\ref{MMRx}) and (\ref{MMRxx}) the corrected median defined as follows:
 \begin{equation}
 \mathrm{\widetilde{med}}(X)=\mathrm{med}(X)+\frac{\mathop{\min}\limits_{j:X_{j}\ne 0}{|X_{j}|}}{M}.
@@ -286,9 +281,6 @@ This means the protected map has a markedly lower level of clustering compared t
 
 \subsection{Moran's $\mathcal{I}$} \label{sec:util_moran}
 
-% Moran plots as a graphical/visual way to compare original and perturbed autocorrelations ? What do you think ?
-% I make a proposition a the end of the subsection
-
 The \emph{Moran's $\mathcal{I}$ statistic}, proposed by \cite{Moran1950}, was conceived as a measure of spatial autocorrelation of spatial objects. In general, the global Moran's $\mathcal{I}$ statistic is of the form
 \begin{equation}
     \mathcal{I}\stackrel{df}{=}\frac{n}{w}\frac{\sum_{i=1}^n{\sum_{j=1}^n{w_{ij}(x_i-\overline{x})(x_j-\overline{x})}}}{\sum_{i=1}^n{(x_i-\overline{x})^2}},
@@ -300,11 +292,9 @@ Values of $\mathcal{I}$ belong usually to the interval $[-1,1]$.\footnote{If the
 
 In constructing (\ref{globalI}) the most important role seems to be played by the matrix of weights $\mathbf{W}=[w_{ij}]$, $i,j=1,2,\ldots,n$. It reflects the closeness of spatial units which can be defined in various ways. A classical approach in this context is based on physical neighbourhood, i.e. on existing common boundaries arbitrarily established (contiguity). More formally, two areas (e.g. grid tiles) are neighbours if they have a common frontier. Two approach in this respect are common: rook contiguity (when only common edges of polygons reflecting borders of given areas are considered to define the neighbor relation) or queen contiguity (when not only common edges but also common vertices are taken into account in this context). Due to better usefulness (e.g. for irregular polygons and reduction of possible inaccuracies) the use of queen criterion is recommended in practice. 
 
-Alternatively, the neighbourhood can also be defined on the basis of a similarity of spatial units with regards to the distribution of a given composite social or economic phenomenon. The distance between given objects is here expressed by distance of vectors of values of relevant variables for them. Of course, they can include also some geographical information (e.g. country of birth), but it is not an absolute priority in this case. That is, it is assumed that such phenomenon is described by a number (say, $m$) variables. Each object is therefore described by a vector from $\mathbb{R}^m$. Using a relevant metric (e.g. Euclidean, city -- called also Manhattan, Minkowski, etc.) one can measure the distance between each pair of objects. The entries of matrix $\mathbf{W}$ can be simply such distances. Alternatively, $\mathbf{W}$ may be established in a binary way, i.e. as $w_{ij}=1$ (not neighbours) if $d_{ij}>q$ and $w_{ij}=0$ (neighbours) otherwise, where $d_{ij}$ is the distance between $i$-th and $j$-th objects and $q>0$ -- an arbitrarily established threshold. A more formal presentation and discussion on these topics was conducted by \cite{Mlodak2013}. The measures of information loss proposed in this paper were implemented to the \texttt{sdcMicro} R-package.   
+Alternatively, the neighbourhood can also be defined on the basis of a similarity of spatial units with regards to the distribution of a given composite social or economic phenomenon. The distance between given objects is here expressed by distance of vectors of values of relevant variables for them. Of course, they can include also some geographical information (e.g. country of birth), but it is not an absolute priority in this case. That is, it is assumed that such phenomenon is described by a number (say, $m$) variables. Each object is therefore described by a vector from $\mathbb{R}^m$. Using a relevant metric (e.g. Euclidean, city -- called also Manhattan, Minkowski, etc.) one can measure the distance between each pair of objects. The entries of matrix $\mathbf{W}$ can be simply such distances. Alternatively, $\mathbf{W}$ may be established in a binary way, i.e. as $w_{ij}=0$ (not neighbours) if $d_{ij}>q$ and $w_{ij}=1$ (neighbours) otherwise, where $d_{ij}$ is the distance between $i$-th and $j$-th objects ($i \neq j$) and $q>0$ -- an arbitrarily established threshold. A more formal presentation and discussion on these topics was conducted by \cite{Mlodak2013}. The measures of information loss proposed in this paper were implemented to the \texttt{sdcMicro} R-package.   
 
 It is worth noting that the variables describing the phenomenon being a base for identification of neighbourhood should be different than variables being perturbed in the SDC process (the neighbourhood is independent of the purpose of current analysis and cannot be perturbed). This means that only non-identifiers, non-quasi identifiers or non-sensitive variables can be used here.\\
-%We could mention here the attention needed in choosing the matrix of weights (choosing contiguity or a distance, choosing a threshold beyond that the weights are set to zero, etc.) because it could have a substantial influence on the measure of the Moran I. Moreover, the matrix of weights has to be normalized, otherwise we create an heterogeinty between the units with a lot of neighbors and those with less. 
-%(See \cite{BellefonEtAlt_2018})
 
 An efficient measure of information loss due to global autocorrelation should satisfy the following expectations:
 \begin{itemize}
@@ -325,7 +315,7 @@ It seems that these postulates are satisfied by the following measure:
 \mathrm{ILM}\stackrel{df}{=}\frac{\mathcal{I}'-\mathcal{I}}{2},
 \label{globalloss}
 \end{equation}
-where $\mathcal{I}'$ is the Moran's $\mathcal{I}$ global statistics (\ref{globalI}) after disclosure protection within the SDC process. The coefficient (\ref{globalloss}) takes value from $[-1,1]$ and hence can be presented in \%. If $\mathrm{ILM}=0$ then no loss is incurred, whereas $|\mathrm{ILM}|=1$ means the loss is maximal.%\\
+where $\mathcal{I}'$ is the Moran's $\mathcal{I}$ global statistics (\ref{globalI}) after disclosure protection within the SDC process. The coefficient (\ref{globalloss}) takes value from $[-1,1]$ and hence can be presented in \%. If $\mathrm{ILM}=0$ then no loss is incurred, whereas $|\mathrm{ILM}|=1$ means the loss is maximal.
 
 \begin{tcolorbox}[breakable]
 \emph{Example}:
@@ -362,7 +352,7 @@ w_{1j} = \frac{1}{3} \text{ for } j = 2,7,8 \text{ and } w_{1j} = 0 \text{ else}
 so that $\sum_j w_{1j} = 1$. For all other rows we proceed likewise.\footnote{
     The creation of a weight matrix would be tedious if done by hand, hence this is usually accomplished by software. For instance, in the R-software, the package \texttt{spdep} can create weight matrices for arbitrarily shaped polygons and the package \texttt{raster} supplies an efficient implementation of weights for regular grids. Note that square grids have a particularly easy neighbourhood structure: all cells that do not lie at the map margin have exactly 8 (`queen'--)neighbours.}\\
 
-Plugging into Eq. (3.6), the count distribution in grid map $\mathbf{X}$ yields a Moran's $\mathcal{I}$ of 0.288, while the quadtree results $\mathbf{X}'$ yield 0.502. Our suggested information loss measure gives then:
+Plugging into Eq. (\ref{globalI}), the count distribution in grid map $\mathbf{X}$ yields a Moran's $\mathcal{I}$ of 0.288, while the quadtree results $\mathbf{X}'$ yield 0.502. Our suggested information loss measure gives then:
 \[
 \mathrm{ILM}=\frac{0.502-0.288}{2}=0.107
 \]
@@ -375,23 +365,16 @@ Apart from the estimation of total information loss, assessment of the distribut
  \mathcal{I}_i\stackrel{df}{=}\frac{(n-1)(x_i-\overline{x})\sum_{j=1}^n{w_{ij}(x_j-\overline{x})}}{\sum_{j=1}^n{(x_j-\overline{x})^2}},
 \label{localI}
 \end{equation}
-% In Anselin 1995, Local Moran is defined as follows:
-%\begin{equation}
-%  I_i\stackrel{df}{=}(x_i-\overline{x})\sum_{j=1}^n{w_{ij}(x_j-\overline{x})},
-% \label{localI}
-% \end{equation}
 $i=1,2,\ldots,n$, where symbols used are the same as in (\ref{globalI}). The information loss can be here expressed by a comparison of basic characteristics of distributions of $\mathcal{I}_i$ and $\mathcal{I}'_i$ (where $\mathcal{I}_i$ denotes the original local Moran's $\mathcal{I}$ statistics and $\mathcal{I}'_i$ this quantity after perturbation of the data during the SDC process) for objects $i=1,2,\ldots,n$. It is worth remembering that the expected value of $\mathcal{I}_i$ is
 \[
 E(\mathcal{I}_i)=-\frac{\sum_{j=1}^n{w_{ij}}}{n-1},\quad i=1,2,\ldots,n.
 \]
 
 Alternatively, one can analyse in this context the distribution of absolute distances $d_i$ between both indices, i.e.
-%\[
 \begin{equation}
 d_i\stackrel{df}{=}\left|\,\mathcal{I}'_i- \mathcal{I}_i\,\right|,\quad i=1,2,\ldots,n.
 \label{eq:d_i}
 \end{equation}
-%\]
 
 However, the formulas (\ref{globalI}) and (\ref{localI}) are based only on a single variable, whereas the data to be published cover often of a number of various variables. Therefore an assessment of a loss on the connections between them taking the spatial autocorrelation into account is also needed. For classical microdata some simple proposals and comparisons in this context were formulated e.g. by \cite{Domingo2001}. A more complex measure of information loss, but taking all (even hard to perceive) connections between continuous variables into account was suggested by \cite{Mlodak2022}. Their approach is based on the diagonal entries of the inverse correlation (usually Pearson's) matrix.
 
@@ -403,7 +386,7 @@ This solution can be used also in the currently discussed situation. Let $X$ and
 
 Due to the properties of the classical global Moran's $\mathcal{I}$ statistics, the measure (\ref{globalIXY}) will also take values from $[0,1]$. If the investigated microdata set contains $m$ ($m\in\mathbb{N}$) continuous variables $X_1,X_2,\ldots,X_m$ then one can define a spatial correlation matrix $\mathbf{IC}\stackrel{df}{=}[\mathcal{I}_{X_kX_l}]$, $k,l=1,2,\ldots,m$. The diagonal entries of its inverse, $\mathbf{IC}^{-1}$, will be a basis for assessing information loss. That is, let $\mathbf{IC}$ be the Moran's correlation matrix for $X_1,X_2,\ldots,X_m$ in original data and $\mathbf{IC}'$ the relevant matrix for perturbed data. According to \cite{Mlodak2022}, the information loss can be then measured as
 \begin{equation}
- \gamma_M\stackrel{df}{=}\frac{1}{\sqrt{2}}\sqrt{\sum_{j=1}^{m}{\left(\frac{\mathcal{I}_{jj}^{(-1)}}{\sqrt{\sum_{l=1}^m{\left(\mathcal{I}_{ll}^{(-1)}\right)^2}}}-\frac{\mathcal{I}_{jj}'^{\,(-1)}}{\sqrt{\sum_{l=1}^m{\left(\mathcal{I}_{ll}^{*(-1)}\right)^2}}}\right)^2}}\in [0,1],
+ \gamma_M\stackrel{df}{=}\frac{1}{\sqrt{2}}\sqrt{\sum_{j=1}^{m}{\left(\frac{\mathcal{I}_{jj}^{(-1)}}{\sqrt{\sum_{l=1}^m{\left(\mathcal{I}_{ll}^{(-1)}\right)^2}}}-\frac{\mathcal{I}_{jj}'^{\,(-1)}}{\sqrt{\sum_{l=1}^m{\left(\mathcal{I}_{ll}'^{\,(-1)}\right)^2}}}\right)^2}}\in [0,1],
 \label{gammaM}
 \end{equation}
 where $\mathcal{I}_{ii}^{(-1)}$ and $\mathcal{I}_{ii}'^{\,(-1)}$ are diagonal entries of $\mathbf{IC}$ and $\mathbf{IC}'$, respectively. Of course, apart from the general case (\ref{gammaM}), one can also analyse the distances between the local spatial correlation of analysed variables for the $i$-th cell, using the formula
@@ -412,12 +395,10 @@ where $\mathcal{I}_{ii}^{(-1)}$ and $\mathcal{I}_{ii}'^{\,(-1)}$ are diagonal en
 \label{lgammaM}
 \end{equation}
 $i=1,2,\ldots,n$. The distance between original (${\gamma}M_i$) and perturbed (${\gamma}M'_i$) local spatial correlation is then given as
-%\[
 \begin{equation}
 dM_i\stackrel{df}{=}\left|{\gamma}M'_i-{\gamma}M_i\right|,\quad i=1,2,\ldots,n.
 \label{eq:dM_i}
 \end{equation}
-%\]
 The distribution of $dM$ over grid cells using (\ref{lgammaM}) is then a basis for assessment of information loss.  
 
 
@@ -456,8 +437,6 @@ Trivially, if all the distortion occurs in a single small part of the map, the o
 \subsection{Mapping the spatial distribution of error} \label{sec:util_LOC_cellerror}
 
 One way to gain local measures is to `disentangle' global measures and map their individual contributions. In other words, to create a map, where each grid cell displays its individual error value. This allows analyzing the spatial distribution of error. Cell-level measures for the global metrics introduced in \ref{sec:util_DD_hd} are shown in Table \ref{tab:util_cellLVL}.
-%\footnote{
-    %The cell-level measure pertaining to the Hellinger distance (Eq. \ref{eq:util_hd}) is the squared distance of square roots (SDSR), while the squared error (SE) and absolute error (AE) are the localized parts of the mean squared error (Eq. \ref{eq:util_mse}) and mean absolute error (Eq. \ref{eq:util_mae}) respectively; see \cite{AntalEtAl2017}.}
 An example is visualized in Fig. \ref{fig:LErr_maps} (bottom left).
 
 \begin{table}[H]
@@ -486,8 +465,7 @@ In our case, the idea is to assign the focal cell an information loss measure. S
 The size of the window determines the degree of `localism': the smaller the window, the more local the measure. The moving window approach can therefore implement different levels of `compromise' between global information loss measures (as per \ref{sec:util_DD} and \ref{sec:util_SPAT}) and mapping the cell-level error (as per \ref{sec:util_LOC_cellerror}).
 
 An example is shown in Fig. \ref{fig:LErr_maps} (bottom right). Compared to the cell-level error in Fig. \ref{fig:LErr_maps} (bottom left), the moving window method marks regions of the map where either many cells with some error or a few cells with large error lie together. The parts of the map most impacted should thus be noticeable at a glance.\footnote{
-    Note that the size of the region impacted needs to be viewed in conjunction with the size of the error. For instance, in Fig. \ref{fig:LErr_maps} (bottom right), the MAE over 1.5km $\times$ 1.5km chunks is mostly below 5 and in the most afflicted regions %(ca. 1\% of the map) 
-    between 5 and 10.}
+    Note that the size of the region impacted needs to be viewed in conjunction with the size of the error. For instance, in Fig. \ref{fig:LErr_maps} (bottom right), the MAE over 1.5km $\times$ 1.5km chunks is mostly below 5 and in the most afflicted regions between 5 and 10.}
 
 \begin{figure}
     \centering
@@ -528,6 +506,4 @@ Among the methods presented in the chapter~\ref{sec:methods}, only the quadtree 
 Users are invited to measure utility (or information loss) at a relevant scale based on the disseminated data and anticipated analyses.
 
 As the information loss cannot be expected to be identical at a global scale (e.g. country level) and at any intermediate or small scale (e.g. region or municipality level), the person in charge of data protection should adapt the scale at which they measure the information loss due to the application of protection methods, depending on the intended uses.
-
-%Let's take the example of the number of households living on the island of La Réunion (France) in 2019. The counts are disseminated in a grid of $200$m $\times$ $200$m tiles. If we compute the Moran's I at the scale of the island, we obtain a Moran's I of $0.521$. But if we calculate Moran's I in each 16km x 16km tile encompassing the island, we obtain a Moran's I ranging from 0.26 to 0.53 depending on the studied area (excluding parts of the island with less than 100 200m tiles).
 

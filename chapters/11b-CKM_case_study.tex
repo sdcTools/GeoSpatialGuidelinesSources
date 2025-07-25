@@ -97,11 +97,9 @@ At first we are interested in any change the perturbation may have infused in th
 \subsubsection{Re-assessing risk after protection}
 
 We have set up variant II of CKM such that no 1s or 2s remain in the output. 
-%(by setting $j_s = 2$). 
 These small counts have become either 0 or 3 or higher, according to the probability distributions depicted in the first two graphs of Fig. \ref{fig:cs_pt}. We have therefore eliminated risky small counts. For variant I, on the other hand, we allowed for 2s in the protected output.
-%($j_s = 1$). 
 This leaves 9.3\% of cells with counts below 3 (or 4.2\%, 5.7\%, and 15.0\% in focus areas 1, 2, and 3 respectively).
-Note, however, that these need not correspond to `true' 2s anymore, as a protected 2 can result from any value between 1 and 6 (according to parameter $D$). One could argue that a potential data attacker can therefore not make use of the small count anymore, as it has become unreliable. Whether or not one feels comfortable with this argument would influence the decision between variants I and II.
+Note, however, that these need not correspond to `true' 2s anymore, as a protected 2 can result from any value between 1 and 6 (according to the maximum perturbation parameter). One could argue that a potential data attacker can therefore not make use of the small count anymore, as it has become unreliable. Whether or not one feels comfortable with this argument would influence the decision between variants I and II.
 
 \subsubsection{Measures of information loss}
 
@@ -117,15 +115,12 @@ Table \ref{tab:cs_il} presents a collection of information loss metrics, compute
         MSE
          & I  & 1.80 & 1.82 & 1.84 & 1.90 \\
          & II & 2.50 & 2.48 & 2.50 & 2.69 \\
-        %\hline
         MAE
          & I  & 1.04 & 1.05 & 1.05 & 1.10 \\
          & II & 1.25 & 1.24 & 1.26 & 1.36 \\
-        %\hline
         HD
          & I  & 0.067 & 0.036 & 0.056 & 0.134 \\
          & II & 0.080 & 0.043 & 0.064 & 0.162 \\
-        %\hline
         KWD
          & I  & 0.119 & 0.029 & 0.061 & 0.180 \\
          & II & 0.133 & 0.033 & 0.070 & 0.219 \\
@@ -134,17 +129,14 @@ Table \ref{tab:cs_il} presents a collection of information loss metrics, compute
          & orig. & 111.50 & 94.22 & 71.18 & 26.89 \\
          & I     & 111.58 & 94.35 & 71.26 & 27.16 \\
          & II    & 111.62 & 94.41 & 71.30 & 17.24 \\
-        %\hline
         MMR$^*$
          & orig. & 1.96 & 1.19 & 1.52 & 1.62 \\
          & I     & 1.68 & 1.06 & 1.34 & 1.04 \\
          & II    & 1.63 & 1.01 & 1.24 & 1.17 \\
-        %\hline
         Moran's $\mathcal{I}$
          & orig. & 0.374 & 0.321 & 0.323 & 0.298 \\
          & I     & 0.373 & 0.320 & 0.323 & 0.296 \\
          & II    & 0.373 & 0.320 & 0.323 & 0.296 \\
-        %\hline
         ILM
          & I  & -0.02\% & -0.04\% & -0.03\% & -0.10\% \\
          & II & -0.02\% & -0.05\% & -0.01\% & -0.08\% \\
@@ -160,7 +152,7 @@ The lower part of table \ref{tab:cs_il} shows measures of spatial association: V
 
 \subsubsection{Local information loss}
 
-Fig. \ref{fig:cs_ilcell_ilmw} (top) shows the absolute error per cell resulting from CKM (see table \ref{tab:util_cellLVL} in section \ref{sec:util_LOC_cellerror}), while Fig. \ref{fig:cs_ilcell_ilmw} (bottom) is the smoothed version using the moving window method from section \ref{sec:util_LOC_mw}. Note that the absolute error per cell is limited by 6 for CKM variant II and 4 for CKM variant I, as per parameter $D$. Moreover, the error distribution is not spatially correlated, meaning it should average out well when looking over a given map section. This can be seen directly in Fig. \ref{fig:cs_ilcell_ilmw} (bottom), where the maximum error could be as high as 4 or 6 respectively, but no such dark spot occurs. In fact, the highest mean absolute error (MAE) of a focal region is 1.64 for variant I or 1.96 for variant II. In other words, for any arbitrary section of 5 $\times$ 5 grid cells (500m $\times$ 500m) a user could be interested in, the average deviation in counts can be guaranteed to be below 2.
+Fig. \ref{fig:cs_ilcell_ilmw} (top) shows the absolute error per cell resulting from CKM (see table \ref{tab:util_cellLVL} in section \ref{sec:util_LOC_cellerror}), while Fig. \ref{fig:cs_ilcell_ilmw} (bottom) is the smoothed version using the moving window method from section \ref{sec:util_LOC_mw}. Note that the absolute error per cell is limited by 6 for CKM variant II and 4 for CKM variant I, as per the maximum perturbation parameter. Moreover, the error distribution is not spatially correlated, meaning it should average out well when looking over a given map section. This can be seen directly in Fig. \ref{fig:cs_ilcell_ilmw} (bottom), where the maximum error could be as high as 4 or 6 respectively, but no such dark spot occurs. In fact, the highest mean absolute error (MAE) of a focal region is 1.64 for variant I or 1.96 for variant II. In other words, for any arbitrary section of 5 $\times$ 5 grid cells (500m $\times$ 500m) a user could be interested in, the average deviation in counts can be guaranteed to be below 2.
 
 Finally, Fig. \ref{fig:cs_locI} displays estimates for the local (cell-level) Moran's $\mathcal{I}$ statistic from section \ref{sec:util_moran}. A strong resemblance between original and perturbed versions implies that for both CKM variants the structure of spatial autocorrelation is well preserved.
 
